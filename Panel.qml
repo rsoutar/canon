@@ -8,7 +8,7 @@ import "Model.js" as Model
 
 Panel {
   id: root
-  moduleName: "andrewbacon.clock"
+  moduleName: "andrewbacon.canon"
   manageIpc: false
 
   property var anchorItem: null

@@ -2,23 +2,22 @@
 
 Berean Standard Bible reader for the Omarchy bar. Offline, no audio.
 
-While this copy is still a clock clone, Omarchy loads it as `andrewbacon.clock`
-and it replaces the built-in clock. The publish id will be
-`io.github.<you>.canon`.
+Plugin id: `andrewbacon.canon`.
 
-## Install (development)
+## Install (this machine)
 
-This folder is already a live plugin:
+The live copy is:
 
 ```sh
-omarchy plugin validate ~/.config/omarchy/plugins/andrewbacon.clock
+omarchy plugin validate ~/.config/omarchy/plugins/andrewbacon.canon
+omarchy plugin enable andrewbacon.canon --section right
 ```
 
-Later, from git:
+From git later:
 
 ```sh
 omarchy plugin add https://github.com/<you>/canon.git --enable
-omarchy bar move io.github.<you>.canon --section right
+omarchy bar move andrewbacon.canon --section right
 ```
 
 ## Usage
@@ -33,8 +32,8 @@ omarchy bar move io.github.<you>.canon --section right
 ## Remove
 
 ```sh
-omarchy plugin remove andrewbacon.clock
+omarchy plugin remove andrewbacon.canon
 ```
 
-While this is still a clone of `omarchy.clock`, removal restores the built-in
-clock. Reading position in `canon.json` is left in place.
+Reading position in `canon.json` is left in place. This plugin is not a clock
+clone; removing it does not touch `omarchy.clock`.

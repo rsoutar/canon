@@ -6,7 +6,7 @@ import qs.Ui
 
 BarWidget {
   id: root
-  moduleName: "andrewbacon.clock"
+  moduleName: "andrewbacon.canon"
 
   readonly property string barLabel: panelLoader.item && panelLoader.item.label
     ? panelLoader.item.label
@@ -65,7 +65,7 @@ BarWidget {
   }
 
   IpcHandler {
-    target: "andrewbacon.clock"
+    target: "andrewbacon.canon"
 
     function open(): void { root.open() }
     function close(): void { root.close() }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "andrewbacon.clock",
+  "id": "andrewbacon.canon",
   "name": "Canon",
   "version": "0.1.0",
   "author": "Ramen Packet",
@@ -18,8 +18,5 @@
     "category": "Info",
     "allowMultiple": false,
     "defaultSection": "right"
-  },
-  "omarchy": {
-    "clonedFrom": "omarchy.clock"
   }
 }
