@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "andrewbacon.clock",
+  "name": "Canon",
+  "version": "0.1.0",
+  "author": "Ramen Packet",
+  "license": "MIT",
+  "description": "Berean Standard Bible reader for the Omarchy bar. Offline, no audio.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Canon",
+    "description": "Read the BSB from the bar",
+    "category": "Info",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  },
+  "omarchy": {
+    "clonedFrom": "omarchy.clock"
+  }
+}
