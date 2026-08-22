@@ -3,6 +3,7 @@
 .import "Canon.js" as Canon
 
 var STATE_VERSION = 1
+var OMITTED_VERSE_TEXT = "Not included in this translation."
 
 function fileUrlToPath(url) {
   var s = String(url || "")
@@ -23,7 +24,13 @@ function versesFor(bible, bookId, chapter) {
     if (!ch) return []
     var out = []
     for (var v = 0; v < ch.length; v++) {
-      out.push({ n: v + 1, text: ch[v] })
+      var text = typeof ch[v] === "string" ? ch[v].trim() : ""
+      var omitted = text === ""
+      out.push({
+        n: v + 1,
+        text: omitted ? OMITTED_VERSE_TEXT : text,
+        omitted: omitted
+      })
     }
     return out
   }
@@ -37,10 +44,18 @@ function verseCount(bible, bookId, chapter) {
 function clampVerse(bible, bookId, chapter, verse) {
   var count = verseCount(bible, bookId, chapter)
   if (count <= 0) return 1
-  var n = typeof verse === "number" ? verse : 1
+  var n = typeof verse === "number" && Math.floor(verse) === verse ? verse : 1
   if (n < 1) return 1
   if (n > count) return count
   return n
+}
+
+function resolveReference(input, bible) {
+  var place = Canon.parseReference(input)
+  if (!place) return null
+  var count = verseCount(bible, place.book, place.chapter)
+  if (count <= 0 || place.verse > count) return null
+  return place
 }
 
 function parseState(json, bible) {
@@ -53,7 +68,8 @@ function parseState(json, bible) {
     if (typeof data.book === "string" && Canon.bookById(data.book)) book = data.book
     if (typeof data.chapter === "number" && Canon.isValidPlace(book, data.chapter, 1))
       chapter = data.chapter
-    if (typeof data.verse === "number" && data.verse >= 1) verse = data.verse
+    if (typeof data.verse === "number" && data.verse >= 1 && Math.floor(data.verse) === data.verse)
+      verse = data.verse
   }
   verse = clampVerse(bible, book, chapter, verse)
   return { book: book, chapter: chapter, verse: verse }

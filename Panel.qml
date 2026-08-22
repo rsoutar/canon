@@ -94,7 +94,7 @@ Panel {
   }
 
   function submitSearch() {
-    var parsed = Canon.parseReference(root.searchText)
+    var parsed = Model.resolveReference(root.searchText, root.bible)
     if (!parsed) {
       root.searchError = "Not a known reference"
       return
@@ -117,7 +117,11 @@ Panel {
   }
 
   function pickBook(id) {
-    root.book = id
+    var place = Canon.bookSelectionPlace(id)
+    if (!place) return
+    root.book = place.book
+    root.chapter = place.chapter
+    root.verse = place.verse
     root.browseMode = "chapters"
   }
 
@@ -299,7 +303,8 @@ Panel {
               id: verseText
               width: parent.width
               text: modelData.n + "  " + modelData.text
-              color: modelData.n === root.verse ? accentColor : contentForeground
+              color: modelData.n === root.verse ? accentColor : (modelData.omitted ? mutedForeground : contentForeground)
+              font.italic: modelData.omitted
               font.family: contentFontFamily
               font.pixelSize: Style.font.bodySmall
               wrapMode: Text.WordWrap

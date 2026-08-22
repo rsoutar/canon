@@ -232,8 +232,13 @@ function parseReference(input) {
   _ensureIndexes()
   var id = _aliasMap[_collapse(bookPart)]
   if (!id) return null
-  if (!isValidPlace(id, chapter, 1)) return null
+  if (!isValidPlace(id, chapter, verse)) return null
   return { book: id, chapter: chapter, verse: verse }
+}
+
+function bookSelectionPlace(bookId) {
+  if (!bookById(bookId)) return null
+  return { book: bookId, chapter: DEFAULT_CHAPTER, verse: DEFAULT_VERSE }
 }
 
 function nextChapter(bookId, chapter) {

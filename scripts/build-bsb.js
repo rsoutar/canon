@@ -42,7 +42,10 @@ const books = raw.books.map((b, i) => {
     const verses = [];
     for (const v of ch.verses) {
       const n = Number(v.verse);
-      verses[n - 1] = String(v.text || "").replace(/\s+/g, " ").trim();
+      const text = String(v.text || "").replace(/\s+/g, " ").trim();
+      // Keep the array index aligned with the canonical verse number. Some
+      // translations omit disputed verses, which the reader labels explicitly.
+      verses[n - 1] = text || null;
     }
     return verses;
   });
