@@ -16,7 +16,7 @@ omarchy plugin enable andrewbacon.canon --section right
 From git later:
 
 ```sh
-omarchy plugin add https://github.com/<you>/canon.git --enable
+omarchy plugin add https://github.com/RamenPacket84/canon.git --enable
 omarchy bar move andrewbacon.canon --section right
 ```
 
