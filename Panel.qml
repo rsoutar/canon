@@ -24,6 +24,7 @@ Panel {
   property string browseMode: "read" // read | books | chapters
   property string browseTestament: "ot"
   property bool stateReady: false
+  property string copyStatus: ""
 
   readonly property color contentForeground: bar ? bar.foreground : Color.foreground
   readonly property color mutedForeground: Color.muted
@@ -129,6 +130,56 @@ Panel {
     root.applyPlace(root.book, n, 1, true)
   }
 
+  function copyCurrentVerse() {
+    if (root.browseMode !== "read") return
+    var verses = Model.versesFor(root.bible, root.book, root.chapter)
+    var selected = verses[root.verse - 1]
+    var text = Model.formatCopiedVerse(selected && selected.text, root.book, root.chapter, root.verse)
+    if (!text) return
+    copyProc.exec(["wl-copy", "--foreground", "--", text])
+    root.copyStatus = "Copied " + Canon.formatRef(root.book, root.chapter, root.verse, false)
+    copiedReset.restart()
+  }
+
+  Process {
+    id: copyProc
+  }
+
+  Timer {
+    id: copiedReset
+    interval: 1500
+    repeat: false
+    onTriggered: root.copyStatus = ""
+  }
+
+  component KeyCap: BorderSurface {
+    property alias label: keyText.text
+    signal activated()
+
+    implicitWidth: Math.max(Style.space(18), keyText.implicitWidth + Style.space(8), implicitHeight)
+    implicitHeight: Math.max(Style.space(18), keyText.implicitHeight + Style.space(4))
+    color: capMouse.containsMouse ? Style.hoverFillFor(root.contentForeground, Color.accent) : "transparent"
+    borderSpec: Border.flat(Qt.darker(root.contentForeground, 1.5), "1 1 2 1")
+    radius: Style.space(3)
+
+    Text {
+      id: keyText
+      anchors.centerIn: parent
+      color: root.mutedForeground
+      font.family: root.contentFontFamily
+      font.pixelSize: Style.font.caption
+      font.bold: true
+    }
+
+    MouseArea {
+      id: capMouse
+      anchors.fill: parent
+      hoverEnabled: true
+      cursorShape: Qt.PointingHandCursor
+      onClicked: parent.activated()
+    }
+  }
+
   FileView {
     id: bibleFile
     path: Model.fileUrlToPath(Qt.resolvedUrl("data/bsb.json"))
@@ -182,6 +233,15 @@ Panel {
       onActivateRequested: {
         if (root.browseMode === "read") root.persist()
       }
+      onTextKey: function(t) {
+        if (t === "c" || t === "C") root.copyCurrentVerse()
+      }
+
+      Shortcut {
+        sequence: StandardKey.Copy
+        enabled: root.opened && root.browseMode === "read" && !searchField.activeFocus
+        onActivated: root.copyCurrentVerse()
+      }
 
       Column {
         id: content
@@ -189,6 +249,7 @@ Panel {
         spacing: Style.space(10)
 
         Item {
+          id: headerBlock
           width: parent.width
           height: headerRow.implicitHeight
 
@@ -226,7 +287,7 @@ Panel {
 
               Text {
                 width: parent.width
-                text: "BSB"
+                text: root.copyStatus !== "" ? root.copyStatus : "BSB"
                 color: mutedForeground
                 font.family: contentFontFamily
                 font.pixelSize: Style.font.caption
@@ -276,18 +337,30 @@ Panel {
         }
 
         Text {
+          id: searchErrorLabel
           width: parent.width
           visible: root.searchError !== ""
+          height: visible ? implicitHeight : 0
           text: root.searchError
           color: root.bar ? root.bar.urgent : contentForeground
           font.family: contentFontFamily
           font.pixelSize: Style.font.caption
         }
 
+        Item {
+          id: body
+          width: parent.width
+          height: Math.max(Style.space(80),
+            content.height
+            - headerBlock.height
+            - searchField.height
+            - searchErrorLabel.height
+            - hintBar.height
+            - content.spacing * (searchErrorLabel.visible ? 4 : 3))
+
         ListView {
           id: verseList
-          width: parent.width
-          height: parent.height - headerRow.height - searchField.height - browseToggle.height - Style.space(40)
+          anchors.fill: parent
           clip: true
           visible: root.browseMode === "read"
           spacing: Style.space(8)
@@ -316,16 +389,16 @@ Panel {
               onClicked: {
                 root.verse = modelData.n
                 root.persist()
+                keyCatcher.forceActiveFocus()
               }
             }
           }
         }
 
         Column {
-          width: parent.width
+          anchors.fill: parent
           visible: root.browseMode !== "read"
           spacing: Style.space(8)
-          height: verseList.height
 
           Row {
             width: parent.width
@@ -408,11 +481,20 @@ Panel {
             }
           }
         }
+        }
 
-        Item {
-          id: browseToggle
-          width: parent.width
-          height: 1
+        Row {
+          id: hintBar
+          spacing: Style.space(6)
+
+          KeyCap { label: "C"; onActivated: root.copyCurrentVerse() }
+          Text {
+            anchors.verticalCenter: parent.verticalCenter
+            text: "copy"
+            color: mutedForeground
+            font.family: contentFontFamily
+            font.pixelSize: Style.font.caption
+          }
         }
       }
     }

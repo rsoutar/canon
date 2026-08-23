@@ -60,6 +60,18 @@ ok("prev wraps to prev book", (() => {
   return n.book === "Malachi" && n.chapter === 4;
 })());
 ok("compact ref", C.formatRef("John", 3, 16, true) === "John 3:16");
+ok("copied psalm 119:37", M.formatCopiedVerse(
+  "Turn my eyes away from worthless things; revive me with Your word.",
+  "Psalms", 119, 37
+) === "Turn my eyes away from worthless things; revive me with Your word. - Psalms 119:37");
+ok("copied john 3:16", M.formatCopiedVerse(
+  "For God so loved the world that He gave His one and only Son, that everyone who believes in Him shall not perish but have eternal life.",
+  "John", 3, 16
+) === "For God so loved the world that He gave His one and only Son, that everyone who believes in Him shall not perish but have eternal life. - John 3:16");
+ok("copied omitted verse", M.formatCopiedVerse(M.OMITTED_VERSE_TEXT, "John", 5, 4)
+  === M.OMITTED_VERSE_TEXT + " - John 5:4");
+ok("copied empty text is blank", M.formatCopiedVerse("", "John", 3, 16) === "");
+ok("copied missing text is blank", M.formatCopiedVerse(null, "John", 3, 16) === "");
 
 const bible = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "data/bsb.json"), "utf8"));
 ok("bsb 66", bible.books.length === 66);

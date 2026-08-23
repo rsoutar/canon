@@ -41,6 +41,12 @@ function verseCount(bible, bookId, chapter) {
   return versesFor(bible, bookId, chapter).length
 }
 
+function formatCopiedVerse(verseText, bookId, chapter, verse) {
+  var text = String(verseText || "").trim()
+  if (!text) return ""
+  return text + " - " + Canon.formatRef(bookId, chapter, verse, false)
+}
+
 function clampVerse(bible, bookId, chapter, verse) {
   var count = verseCount(bible, bookId, chapter)
   if (count <= 0) return 1
