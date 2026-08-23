@@ -25,6 +25,7 @@ omarchy bar move andrewbacon.canon --section right
 - Left-click the bar chip to open or close the reader.
 - Scroll the chip to move to the previous or next chapter.
 - Type a reference (`jn 3:16`, `psalm 23`, `1 john 1`) and press Enter.
+- Press `c` to copy the current verse as `text - Book chapter:verse`.
 - Use the book button to browse Old/New Testament, then a chapter.
 - Escape closes the panel. The last verse is saved to
   `~/.local/state/omarchy/settings/canon.json`.
