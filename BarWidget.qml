@@ -72,6 +72,10 @@ BarWidget {
     function show(): void { root.open() }
     function hide(): void { root.close() }
     function toggle(): void { root.toggle() }
+    function copy(): void {
+      if (panelLoader.item && typeof panelLoader.item.copyCurrentVerse === "function")
+        panelLoader.item.copyCurrentVerse()
+    }
   }
 
   WidgetButton {
