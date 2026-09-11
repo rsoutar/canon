@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "andrewbacon.canon",
   "name": "Canon",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Ramen Packet",
   "license": "MIT",
   "description": "Berean Standard Bible reader for the Omarchy bar. Offline, no audio.",
