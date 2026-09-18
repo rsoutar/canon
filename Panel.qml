@@ -49,9 +49,11 @@ Panel {
   }
 
   function close() {
+    // Release the full-screen KeyboardPanel input surface before optional
+    // cleanup so a host API or persistence error cannot leave it mapped.
+    root.controller.hide()
     setCenterHoverRevealSuppressed(false)
     root.persist()
-    root.controller.hide()
   }
 
   function toggle() {
@@ -66,7 +68,9 @@ Panel {
   }
 
   function setCenterHoverRevealSuppressed(value) {
-    if (root.bar && "centerHoverRevealSuppressed" in root.bar)
+    if (root.bar && typeof root.bar.setCenterHoverRevealSuppressed === "function")
+      root.bar.setCenterHoverRevealSuppressed(value)
+    else if (root.bar && "centerHoverRevealSuppressed" in root.bar)
       root.bar.centerHoverRevealSuppressed = value
   }
 
